@@ -26,7 +26,7 @@ class Game:
 
         self.player = PhysicsEntity(self, 'player', (50, 50), (8,15))
         self.tilemap = Tilemap(self,tile_size=16)
-
+        self.scroll = [0,0]
 
     def run(self):
         while self.running:          
@@ -47,10 +47,14 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False         
  
+            self.scroll[0] += (self.player.rect().centerx - self.gameSurface.get_width() / 2 - self.scroll[0]) / 30
+            self.scroll[1] += (self.player.rect().centery - self.gameSurface.get_height() / 2 - self.scroll[1]) / 30
+            render_scroll = (int(self.scroll[0]),int(self.scroll[1]))
+
             self.gameSurface.fill((14,219,248))
-            self.tilemap.render(self.gameSurface)
+            self.tilemap.render(self.gameSurface, offset=render_scroll)
             self.player.update(self.tilemap,(self.movement[1] - self.movement[0],0))
-            self.player.render(self.gameSurface)            
+            self.player.render(self.gameSurface, offset=render_scroll)            
             
             self.screen.blit(pygame.transform.scale(self.gameSurface,self.screen.get_size()),(0,0))
             pygame.display.update()
